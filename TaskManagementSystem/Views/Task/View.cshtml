@@ -1,0 +1,44 @@
+﻿@model TaskViewModel
+@{
+    ViewBag.Title = (Model.Id == 0 ? "New" : "Edit") + " Task";
+
+}
+
+<div class="row">
+    <div class="col-md-4">
+
+
+
+        <div class="form-group">
+            <label asp-for="Title" class="control-label"></label>
+            <label asp-for="Title" class="form-control">@Model.Title</label>
+
+        </div>
+        <div class="form-group">
+            <label asp-for="Description" class="control-label"></label>
+            <label asp-for="Description" class="form-control">@Model.Description</label>
+
+        </div>
+        <div class="form-group">
+            <label asp-for="DueDate" class="control-label">Due Date</label>
+            <label asp-for="DueDate" class="form-control">@Convert.ToDateTime(Model.DueDate).ToString("dd-MM-yyyy")</label>
+
+        </div>
+        <div class="form-group">
+            <label asp-for="Status" class="control-label"></label>
+            <label asp-for="Status" class="form-control">@Model.Status</label>
+            
+        </div>
+        <div class="form-group">
+            <label asp-for="CreatedBy" class="control-label">Created By</label>
+            <label asp-for="CreatedBy" class="form-control">@Model.CreatedBy</label>
+            
+        </div>
+
+
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>

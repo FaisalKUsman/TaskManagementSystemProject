@@ -1,0 +1,124 @@
+﻿@model System.Data.DataTable
+@{
+    ViewData["data"] = Model;
+    Layout ="_Layout2";
+}
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    @*<link href="~/Content/bootstrap.css" rel="stylesheet" />*@
+
+<link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.bootstrap.min.css" rel="stylesheet" />
+<link href="~/lib/bootstrap/css/bootstrap.css" rel="stylesheet" />
+<script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap4.min.js "></script>
+
+<script>
+    $(document).ready(function () {
+        @Html.Raw(TempData["msg"]);
+    })
+</script>
+<div class="container mt-4">
+
+    <!-- Set up the datatable -->
+    <table class="table" id="userTable" style="width:100%">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Due Date</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.Rows.Count; i++)
+            {
+                <tr>
+                    <td>@Model.Rows[i]["id"]</td>
+                    <td>@Model.Rows[i]["title"]</td>
+                    <td>@Model.Rows[i]["taskdescription"]</td>
+                    <td>@Convert.ToDateTime(Model.Rows[i]["duedate"]).ToString("dd-MM-yyyy")</td>
+                    <td>@Model.Rows[i]["taskstatus"]</td>
+
+                    <td>
+                        <a asp-action="View" asp-route-id="@Model.Rows[i]["id"]">View</a>
+                        <a asp-action="Create" asp-route-id="@Model.Rows[i]["id"]">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@Model.Rows[i]["id"]" onclick="return confirm('Are you sure want to delete this?')">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th>Due Date</th>
+                <th>Gender</th>
+            </tr>
+        </tfoot>
+    </table>
+    <a asp-action="Default">Back to MainPage</a>
+</div>
+
+@*<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>*@
+@*<link rel="stylesheet" href="https://cdn.datatables.net/2.0.5/css/dataTables.dataTables.css" />
+
+<script src="https://cdn.datatables.net/2.0.5/js/dataTables.js"></script>*@
+<script>
+    @*var data =@ViewData["data"];*@
+    $(document).ready(function () {
+        $('#userTable').DataTable({
+            //"processing": true, // for show progress bar
+            //"serverSide": true, // for process server side
+            //"filter": true, // this is for disable filter (search box)
+            //"orderMulti": false, // for disable multiple column at once
+            //"pageLength": 5,
+
+            //"ajax": data
+            //{
+            //    "url": "/Task/LoadTasks",
+            //    "type": "POST",
+            //    "datatype": "json"
+            //}
+            //,
+            initComplete: function () {
+                this.api().columns().every(function (ind) {
+                    var column = this;
+                    if (ind == 4) {
+                        var select = $('<select class="form-control custom-cls"><option value="All">All</option><option value="Incomplete">Incomplete</option><option value="Complete">Complete</option></select>').appendTo($(column.footer()).empty()).on('change', function () {
+                            var val = $.fn.dataTable.util.escapeRegex($(this).val());
+                            if (val == 'All') {
+                                val = '';
+                            }
+                            column.search(val ? '^' + val + '$' : '', true, false).draw();
+                        });
+
+
+                    }
+                    if (ind == 3) {
+                        var select = $('<input type="text" class="form-control">').appendTo($(column.footer()).empty()).on('focusout keyup', function (event) {
+                            var flag = 0;
+                            if (event.type == "keyup") {
+                                if (event.keyCode == 13) {
+                                    flag = 1;
+                                }
+                            }
+                            else if (event.type == "focusout") {
+                                flag = 1;
+                            }
+                            if (flag == 1) {
+                                var val = $.fn.dataTable.util.escapeRegex($(this).val());
+                                column.search(val ? '^' + val + '$' : '', true, false).draw();
+                            }
+                        });
+
+
+                    }
+                });
+            },
+        });
+    });
+</script>
